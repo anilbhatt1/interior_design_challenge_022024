@@ -1,0 +1,14 @@
+# git ignore variables for python development
+venv
+*.pyc
+__pycache__
+*.egg-info
+*.egg
+*.pyo
+*.pyd
+*.so
+*.dll
+*.exe
+*.tar
+*.zip
+*.tgz
