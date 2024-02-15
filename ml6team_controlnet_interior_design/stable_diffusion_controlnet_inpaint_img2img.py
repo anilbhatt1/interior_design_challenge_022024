@@ -19,9 +19,10 @@ from diffusers.utils import (
     PIL_INTERPOLATION,
     is_accelerate_available,
     is_accelerate_version,
-    randn_tensor,
+    # randn_tensor,
     replace_example_docstring,
 )
+from diffusers.utils.torch_utils import randn_tensor
 
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
