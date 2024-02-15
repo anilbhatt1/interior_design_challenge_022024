@@ -116,7 +116,7 @@ def get_controlnet():
 
 
 
-@st.cache_resource(max_entries=5)
+# @st.cache_resource(max_entries=5)
 def get_inpainting_pipeline():
     """Method to load the inpainting pipeline
     Returns:
