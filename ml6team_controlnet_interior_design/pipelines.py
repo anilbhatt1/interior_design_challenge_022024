@@ -105,7 +105,7 @@ class SDPipeline:
 
 
 
-@st.cache_resource(max_entries=5)
+# @st.cache_resource(max_entries=5)
 def get_controlnet():
     """Method to load the controlnet model
     Returns:
