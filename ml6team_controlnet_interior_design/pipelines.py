@@ -35,7 +35,7 @@ class ControlNetPipeline:
         )
 
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
-        self.pipe.enable_xformers_memory_efficient_attention()
+        # self.pipe.enable_xformers_memory_efficient_attention()
         self.pipe = self.pipe.to("cuda")
         
         self.waiting_queue = []
@@ -73,7 +73,7 @@ class SDPipeline:
             safety_checker=None,
         )
 
-        self.pipe.enable_xformers_memory_efficient_attention()
+        # self.pipe.enable_xformers_memory_efficient_attention()
         self.pipe = self.pipe.to("cuda")
         
         self.waiting_queue = []
