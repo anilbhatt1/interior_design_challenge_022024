@@ -1,0 +1,27 @@
+name: Caption images
+description: This component captions images using a BLIP model from the Hugging Face hub
+image: fndnt/caption_images:dev
+tags:
+  - Image processing
+
+consumes:
+  image:
+    type: binary
+
+produces:
+  caption:
+    type: utf8
+
+args:
+  model_id:
+    description: Id of the BLIP model on the Hugging Face hub
+    type: str
+    default: "Salesforce/blip-image-captioning-base"
+  batch_size:
+    description: Batch size to use for inference
+    type: int
+    default: 8
+  max_new_tokens:
+    description: Maximum token length of each caption
+    type: int
+    default: 50

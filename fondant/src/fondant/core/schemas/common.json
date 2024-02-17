@@ -1,0 +1,79 @@
+{
+  "definitions": {
+    "subset_data_type": {
+      "type": "string",
+      "enum": [
+        "bool",
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "float16",
+        "float32",
+        "float64",
+        "decimal",
+        "time32",
+        "time64",
+        "timestamp",
+        "date32",
+        "date64",
+        "duration",
+        "utf8",
+        "string",
+        "binary",
+        "list",
+        "struct",
+        "array"
+      ]
+    },
+    "field": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "$ref": "#/definitions/subset_data_type"
+        },
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/field"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/field"
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "additionalProperties": {
+      "type": "boolean",
+      "default": {},
+      "description": "Specifies whether additional fields are allowed"
+    },
+    "fields": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/field"
+          },
+          {
+            "$ref": "#/definitions/additionalProperties"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+name: example_component
+image: example_component:latest
+description: This is an example component
+tags:
+  - Data loading
+
+consumes:
+  images:
+    type: binary
+
+  embeddings:
+    type: array
+    items:
+      type: float32
+
+produces:
+  captions:
+    type: string
+
+args:
+  storage_args:
+    description: Storage arguments
+    type: str

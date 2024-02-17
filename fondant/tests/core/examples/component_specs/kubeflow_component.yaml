@@ -1,0 +1,70 @@
+components:
+  comp-example-component:
+    executorLabel: exec-example-component
+    inputDefinitions: &id001
+      parameters:
+        input_manifest_path:
+          parameterType: STRING
+          description: Path to the input manifest
+          isOptional: true
+        operation_spec:
+          parameterType: STRING
+          description: The operation specification as a dictionary
+        input_partition_rows:
+          parameterType: NUMBER_INTEGER
+          description: The number of rows to load per partition.                         Set
+            to override the automatic partitioning
+          isOptional: true
+        cache:
+          parameterType: BOOLEAN
+          description: Set to False to disable caching, True by default.
+          defaultValue: true
+        metadata:
+          parameterType: STRING
+          description: Metadata arguments containing the run id and base path
+        output_manifest_path:
+          parameterType: STRING
+          description: Path to the output manifest
+        storage_args:
+          parameterType: STRING
+          description: Storage arguments
+deploymentSpec:
+  executors:
+    exec-example-component:
+      container:
+        command:
+        - fondant
+        - execute
+        - main
+        image: example_component:latest
+pipelineInfo:
+  name: example-component
+root:
+  dag:
+    tasks:
+      example-component:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-example-component
+        inputs:
+          parameters:
+            input_manifest_path:
+              componentInputParameter: input_manifest_path
+            operation_spec:
+              componentInputParameter: operation_spec
+            input_partition_rows:
+              componentInputParameter: input_partition_rows
+            cache:
+              componentInputParameter: cache
+            metadata:
+              componentInputParameter: metadata
+            output_manifest_path:
+              componentInputParameter: output_manifest_path
+            storage_args:
+              componentInputParameter: storage_args
+        taskInfo:
+          name: example-component
+  inputDefinitions: *id001
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.6.0

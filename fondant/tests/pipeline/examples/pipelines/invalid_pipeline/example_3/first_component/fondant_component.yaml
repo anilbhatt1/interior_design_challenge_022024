@@ -1,0 +1,11 @@
+name: First component
+description: This is an example component
+image: example_component:latest
+
+produces:
+  additionalProperties: true
+
+args:
+  storage_args:
+    description: Storage arguments
+    type: str

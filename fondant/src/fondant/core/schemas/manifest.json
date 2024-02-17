@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "base_path": {
+          "type": "string",
+          "format": "uri"
+        },
+        "pipeline_name": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "component_id": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": [
+        "base_path",
+        "pipeline_name",
+        "run_id"
+      ]
+    },
+    "index": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "location"
+      ]
+    },
+    "fields": {
+      "$ref": "#/definitions/fields"
+    }
+  },
+  "required": [
+    "metadata",
+    "index",
+    "fields"
+  ],
+  "definitions": {
+    "field": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string",
+          "pattern": "/.*"
+        }
+      },
+      "required": [
+        "location",
+        "type"
+      ]
+    },
+    "fields": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/field"
+      }
+    }
+  }
+}
