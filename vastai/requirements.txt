@@ -1,0 +1,26 @@
+numpy
+matplotlib
+torch
+pandas
+torchvision
+pillow
+transformers 
+diffusers 
+ftfy 
+huggingface_hub
+accelerate
+einops
+open_clip_torch
+omegaconf
+pytorch-lightning
+albumentations
+opencv-python
+gdown
+xformers
+
+#apt-get install ffmpeg libsm6 libxext6  -y
+#huggingface-cli login
+#apt install unzip
+#!git clone https://github.com/anilbhatt1/ControlNet.git
+
+
