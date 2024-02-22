@@ -10,6 +10,7 @@ def convert_hex_to_rgba(hex_code: str) -> str:
     Returns:
         str: rgba string
     """
+    print(f'palette : convert_hex_to_rgba')
     hex_code = hex_code.lstrip('#')
     return "rgba(" + str(int(hex_code[0:2], 16)) + ", " + str(int(hex_code[2:4], 16)) + ", " + str(int(hex_code[4:6], 16)) + ", 1.0)"
 
@@ -21,6 +22,7 @@ def convert_dict_to_rgba(color_dict: Dict) -> Dict:
     Returns:
         Dict: color dictionary with rgba values
     """
+    print(f'palette : convert_dict_to_rgba')
     updated_dict = {}
     for k, v in color_dict.items():
         updated_dict[convert_hex_to_rgba(k)] = v
@@ -28,6 +30,7 @@ def convert_dict_to_rgba(color_dict: Dict) -> Dict:
 
 
 def convert_nested_dict_to_rgba(nested_dict):
+    print(f'palette : convert_nested_dict_to_rgba')
     updated_dict = {}
     for k, v in nested_dict.items():
         updated_dict[k] = convert_dict_to_rgba(v)

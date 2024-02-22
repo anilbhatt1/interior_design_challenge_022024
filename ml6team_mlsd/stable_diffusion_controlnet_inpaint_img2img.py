@@ -116,6 +116,7 @@ EXAMPLE_DOC_STRING = """
 
 
 def prepare_image(image):
+    print(f'SDCIII prepare_image')
     if isinstance(image, torch.Tensor):
         # Batch single image
         if image.ndim == 3:
@@ -140,6 +141,7 @@ def prepare_image(image):
 
 
 def prepare_mask_image(mask_image):
+    print(f'SDCIII prepare_mask_image')
     if isinstance(mask_image, torch.Tensor):
         if mask_image.ndim == 2:
             # Batch and add channel dim for single mask
@@ -177,6 +179,7 @@ def prepare_mask_image(mask_image):
 def prepare_controlnet_conditioning_image(
     controlnet_conditioning_image, width, height, batch_size, num_images_per_prompt, device, dtype
 ):
+    print(f'SDCIII prepare_controlnet_conditioning_image')
     if not isinstance(controlnet_conditioning_image, torch.Tensor):
         if isinstance(controlnet_conditioning_image, PIL.Image.Image):
             controlnet_conditioning_image = [controlnet_conditioning_image]
@@ -228,7 +231,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         requires_safety_checker: bool = True,
     ):
         super().__init__()
-
+        print(f'SDCIII-Class init')
         if safety_checker is None and requires_safety_checker:
             logger.warning(
                 f"You have disabled the safety checker for {self.__class__} by passing `safety_checker=None`. Ensure"
@@ -264,6 +267,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         When this option is enabled, the VAE will split the input tensor in slices to compute decoding in several
         steps. This is useful to save some memory and allow larger batch sizes.
         """
+        print(f'SDCIII-Class enable_vae_slicing')
         self.vae.enable_slicing()
 
     def disable_vae_slicing(self):
@@ -271,6 +275,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         Disable sliced VAE decoding. If `enable_vae_slicing` was previously invoked, this method will go back to
         computing decoding in one step.
         """
+        print(f'SDCIII-Class disable_vae_slicing')
         self.vae.disable_slicing()
 
     def enable_sequential_cpu_offload(self, gpu_id=0):
@@ -281,6 +286,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         Note that offloading happens on a submodule basis. Memory savings are higher than with
         `enable_model_cpu_offload`, but performance is lower.
         """
+        print(f'SDCIII-Class enable_sequential_cpu_offload')
         if is_accelerate_available():
             from accelerate import cpu_offload
         else:
@@ -301,6 +307,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         method is called, and the model remains in GPU until the next model runs. Memory savings are lower than with
         `enable_sequential_cpu_offload`, but performance is much better due to the iterative execution of the `unet`.
         """
+        print(f'SDCIII-Class enable_model_cpu_offload')
         if is_accelerate_available() and is_accelerate_version(">=", "0.17.0.dev0"):
             from accelerate import cpu_offload_with_hook
         else:
@@ -329,6 +336,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         `pipeline.enable_sequential_cpu_offload()` the execution device can only be inferred from Accelerate's module
         hooks.
         """
+        print(f'SDCIII-Class _execution_device')
         if not hasattr(self.unet, "_hf_hook"):
             return self.device
         for module in self.unet.modules():
@@ -373,6 +381,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
                 weighting. If not provided, negative_prompt_embeds will be generated from `negative_prompt` input
                 argument.
         """
+        print(f'SDCIII-Class _encode_prompt')
         if prompt is not None and isinstance(prompt, str):
             batch_size = 1
         elif prompt is not None and isinstance(prompt, list):
@@ -478,6 +487,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         return prompt_embeds
 
     def run_safety_checker(self, image, device, dtype):
+        print(f'SDCIII-Class run_safety_checker')
         if self.safety_checker is not None:
             safety_checker_input = self.feature_extractor(self.numpy_to_pil(image), return_tensors="pt").to(device)
             image, has_nsfw_concept = self.safety_checker(
@@ -488,6 +498,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         return image, has_nsfw_concept
 
     def decode_latents(self, latents):
+        print(f'SDCIII-Class decode_latents')
         latents = 1 / self.vae.config.scaling_factor * latents
         image = self.vae.decode(latents).sample
         image = (image / 2 + 0.5).clamp(0, 1)
@@ -500,7 +511,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         # eta (η) is only used with the DDIMScheduler, it will be ignored for other schedulers.
         # eta corresponds to η in DDIM paper: https://arxiv.org/abs/2010.02502
         # and should be between [0, 1]
-
+        print(f'SDCIII-Class prepare_extra_step_kwargs')
         accepts_eta = "eta" in set(inspect.signature(self.scheduler.step).parameters.keys())
         extra_step_kwargs = {}
         if accepts_eta:
@@ -526,6 +537,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         negative_prompt_embeds=None,
         strength=None,
     ):
+        print(f'SDCIII-Class check_inputs')
         if height % 8 != 0 or width % 8 != 0:
             raise ValueError(f"`height` and `width` have to be divisible by 8 but are {height} and {width}.")
 
@@ -669,6 +681,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
             raise ValueError(f"The value of strength should in [0.0, 1.0] but is {strength}")
 
     def get_timesteps(self, num_inference_steps, strength, device):
+        print(f'SDCIII-Class get_timesteps')
         # get the original timestep using init_timestep
         init_timestep = min(int(num_inference_steps * strength), num_inference_steps)
 
@@ -678,6 +691,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         return timesteps, num_inference_steps - t_start
 
     def prepare_latents(self, image, timestep, batch_size, num_images_per_prompt, dtype, device, generator=None):
+        print(f'SDCIII-Class prepare_latents')
         if not isinstance(image, (torch.Tensor, PIL.Image.Image, list)):
             raise ValueError(
                 f"`image` has to be of type `torch.Tensor`, `PIL.Image.Image` or list but is {type(image)}"
@@ -719,6 +733,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         return latents
 
     def prepare_mask_latents(self, mask_image, batch_size, height, width, dtype, device, do_classifier_free_guidance):
+        print(f'SDCIII-Class prepare_mask_latents')
         # resize the mask to latents shape as we concatenate the mask to the latents
         # we do that before converting to dtype to avoid breaking in case we're using cpu_offload
         # and half precision
@@ -744,6 +759,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
     def prepare_masked_image_latents(
         self, masked_image, batch_size, height, width, dtype, device, generator, do_classifier_free_guidance
     ):
+        print(f'SDCIII-Class prepare_masked_image_latents')
         masked_image = masked_image.to(device=device, dtype=dtype)
 
         # encode the mask image into latents space so we can concatenate it to the latents
@@ -776,6 +792,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
         return masked_image_latents
 
     def _default_height_width(self, height, width, image):
+        print(f'SDCIII-Class _default_height_width')
         if isinstance(image, list):
             image = image[0]
 
@@ -915,6 +932,7 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
             list of `bool`s denoting whether the corresponding generated image likely represents "not-safe-for-work"
             (nsfw) content, according to the `safety_checker`.
         """
+        print(f'SDCIII-Class __call__')
         # 0. Default height and width to unet
         height, width = self._default_height_width(height, width, controlnet_conditioning_image)
 
@@ -1109,5 +1127,6 @@ class StableDiffusionControlNetInpaintImg2ImgPipeline(DiffusionPipeline):
 
         if not return_dict:
             return (image, has_nsfw_concept)
+        print(f'SDCIII-Class __call__ abou to call StableDiffusionPipelineOutput()')
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)

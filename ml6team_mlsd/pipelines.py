@@ -23,6 +23,7 @@ LOGGING = logging.getLogger(__name__)
 
 class ControlNetPipeline:
     def __init__(self):
+        print(f'pipeline :ControlNetPipeline init')
         self.in_use = False
         self.controlnet = ControlNetModel.from_pretrained(
         "BertChristiaens/controlnet-seg-room", torch_dtype=torch.float16)
@@ -43,9 +44,11 @@ class ControlNetPipeline:
     
     @property
     def queue_size(self):
+        print(f'pipeline :ControlNetPipeline queue_size')
         return len(self.waiting_queue)
     
     def __call__(self, **kwargs):
+        print(f'pipeline :ControlNetPipeline __call__')
         self.count += 1
         number = self.count
 
@@ -67,6 +70,7 @@ class ControlNetPipeline:
     
 class SDPipeline:
     def __init__(self):
+        print(f'pipeline :SDPipeline __init__')
         self.pipe = StableDiffusionInpaintPipeline.from_pretrained(
             "stabilityai/stable-diffusion-2-inpainting",
             torch_dtype=torch.float16,
@@ -81,9 +85,11 @@ class SDPipeline:
     
     @property
     def queue_size(self):
+        print(f'pipeline :SDPipeline queue_size')
         return len(self.waiting_queue)
     
     def __call__(self, **kwargs):
+        print(f'pipeline :SDPipeline __call__')
         self.count += 1
         number = self.count
 
@@ -111,6 +117,7 @@ def get_controlnet():
     Returns:
         ControlNetModel: controlnet model
     """
+    print(f'pipeline : get_controlnet')
     pipe = ControlNetPipeline()
     return pipe
 
@@ -122,5 +129,6 @@ def get_inpainting_pipeline():
     Returns:
         StableDiffusionInpaintPipeline: inpainting pipeline
     """
+    print(f'pipeline : get_inpainting_pipeline')
     pipe = SDPipeline()
     return pipe

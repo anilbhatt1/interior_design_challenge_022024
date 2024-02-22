@@ -17,6 +17,8 @@ albumentations
 opencv-python
 gdown
 xformers
+controlnet-aux==0.0.7
+mediapipe
 
 #apt-get install ffmpeg libsm6 libxext6  -y
 #huggingface-cli login

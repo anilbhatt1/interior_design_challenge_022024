@@ -5,6 +5,7 @@ from PIL import Image
 import numpy as np
 
 def flush():
+    print(f'helpers - flush')
     gc.collect()
     torch.cuda.empty_cache()
     
@@ -18,6 +19,7 @@ def convolution(mask: Image.Image, size=9) -> Image:
     Returns:
         Image: blurred mask
     """
+    print(f'helpers - convolution')
     mask = np.array(mask.convert("L"))
     conv = np.ones((size, size)) / size**2
     mask_blended = fftconvolve(mask, conv, 'same')
@@ -43,5 +45,6 @@ def postprocess_image_masking(inpainted: Image, image: Image, mask: Image) -> Im
     Returns:
         Image: inpainted image
     """
+    print(f'helpers - postprocess_image_masking')
     final_inpainted = Image.composite(inpainted.convert("RGBA"), image.convert("RGBA"), mask)
     return final_inpainted.convert("RGB")
