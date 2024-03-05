@@ -721,10 +721,46 @@ lora_attn_procs built : {'down_blocks.0.attentions.0.transformer_blocks.0.attn1.
 unet.set_attn_processor using lora_attn_procs done
 lora_layers populated
 optimizer_cls : <class 'torch.optim.adamw.AdamW'>
-args.dataset_name : custom taking custom dataset
+Preparing image_list : args.caption_file_path : /content/image_captions.json
+args.image_dir : /content/exr_subset/120/, args.token_limit: 50
+ caption lengths : 200, 200
+train_dataset prepared : 200
+train_dataloader prepared with bs : 4
+num_update_steps_per_epoch : 13
+prepared everything with accelerator
+wandb: Currently logged in as: anilbhatt1. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.16.3
+wandb: Run data is saved locally in /content/interior_design_challenge_022024/terrain-diffusion/scripts/wandb/run-20240305_085352-b0xbyz8z
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run winter-resonance-2
+wandb: ⭐️ View project at https://wandb.ai/anilbhatt1/text2image-inpaint-fine-tune
+wandb: 🚀 View run at https://wandb.ai/anilbhatt1/text2image-inpaint-fine-tune/runs/b0xbyz8z
+total_batch_size : 16
+03/05/2024 08:53:53 - INFO - __main__ - ***** Running training *****
+03/05/2024 08:53:53 - INFO - __main__ -   Num examples = 200
+03/05/2024 08:53:53 - INFO - __main__ -   Num Epochs = 1
+03/05/2024 08:53:53 - INFO - __main__ -   Instantaneous batch size per device = 4
+03/05/2024 08:53:53 - INFO - __main__ -   Total train batch size (w. parallel, distributed & accumulation) = 16
+03/05/2024 08:53:53 - INFO - __main__ -   Gradient Accumulation steps = 4
+03/05/2024 08:53:53 - INFO - __main__ -   Total optimization steps = 13
+Steps:   0% 0/13 [00:00<?, ?it/s]training epoch # 0
 Traceback (most recent call last):
-  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1512, in <module>
+  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1524, in <module>
     main()
-  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1021, in main
-    column_names = dataset["train"].column_names
-UnboundLocalError: local variable 'dataset' referenced before assignment
+  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1264, in main
+    latents = vae.encode(
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/utils/accelerate_utils.py", line 46, in wrapper
+    return method(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/autoencoders/autoencoder_kl.py", line 258, in encode
+    h = self.encoder(x)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/autoencoders/vae.py", line 143, in forward
+    sample = self.conv_in(sample)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/conv.py", line 463, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/conv.py", line 459, in _conv_forward
+    return F.conv2d(input, weight, bias, self.stride,
+RuntimeError: "slow_conv2d_cpu" not implemented for 'Half'
