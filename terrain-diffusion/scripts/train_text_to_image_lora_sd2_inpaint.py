@@ -993,153 +993,163 @@ def main():
 
     # In distributed training, the load_dataset function guarantees that only one local process can concurrently
     # download the dataset.
-    if args.dataset_name is not None:
-        if args.dataset_name == "sshh12/sentinel-2-rgb-captioned":
-            # Downloading and loading a dataset from the hub.
-            dataset = load_dataset(
-                args.dataset_name,
-                args.dataset_config_name,
-                cache_dir=args.cache_dir,
-                data_dir=args.train_data_dir,
-            )
-        elif args.dataset_name == "custom":
-            print(f'args.dataset_name : {args.dataset_name} taking custom dataset')
-    else:
-        data_files = {}
-        if args.train_data_dir is not None:
-            data_files["train"] = os.path.join(args.train_data_dir, "**")
-        dataset = load_dataset(
-            "imagefolder",
-            data_files=data_files,
-            cache_dir=args.cache_dir,
-        )
-        # See more about loading custom images at
-        # https://huggingface.co/docs/datasets/v2.4.0/en/image_load#imagefolder
+    # if args.dataset_name is not None:
+    #     if args.dataset_name == "sshh12/sentinel-2-rgb-captioned":
+    #         # Downloading and loading a dataset from the hub.
+    #         dataset = load_dataset(
+    #             args.dataset_name,
+    #             args.dataset_config_name,
+    #             cache_dir=args.cache_dir,
+    #             data_dir=args.train_data_dir,
+    #         )
+    #     elif args.dataset_name == "custom":
+    #         print(f'args.dataset_name : {args.dataset_name} taking custom dataset')
+    # else:
+    #     data_files = {}
+    #     if args.train_data_dir is not None:
+    #         data_files["train"] = os.path.join(args.train_data_dir, "**")
+    #     dataset = load_dataset(
+    #         "imagefolder",
+    #         data_files=data_files,
+    #         cache_dir=args.cache_dir,
+    #     )
+    #     # See more about loading custom images at
+    #     # https://huggingface.co/docs/datasets/v2.4.0/en/image_load#imagefolder
 
-    # Preprocessing the datasets.
-    # We need to tokenize inputs and targets.
-    column_names = dataset["train"].column_names
-    print(f'column_names : {column_names}')
-    # 6. Get the column names for input/target.
-    dataset_columns = DATASET_NAME_MAPPING.get(args.dataset_name, None)
-    print(f'dataset_columns : {dataset_columns}')
-    if args.image_column is None:
-        image_column = (
-            dataset_columns[0] if dataset_columns is not None else column_names[0]
-        )
-    else:
-        image_column = args.image_column
-        if image_column not in column_names:
-            raise ValueError(
-                f"--image_column' value '{args.image_column}' needs to be one of: {', '.join(column_names)}"
-            )
-    if args.caption_column is None:
-        caption_column = (
-            dataset_columns[1] if dataset_columns is not None else column_names[1]
-        )
-    else:
-        caption_column = args.caption_column
-        if caption_column not in column_names:
-            raise ValueError(
-                f"--caption_column' value '{args.caption_column}' needs to be one of: {', '.join(column_names)}"
-            )
+    # # Preprocessing the datasets.
+    # # We need to tokenize inputs and targets.
+    # column_names = dataset["train"].column_names
+    # print(f'column_names : {column_names}')
+    # # 6. Get the column names for input/target.
+    # dataset_columns = DATASET_NAME_MAPPING.get(args.dataset_name, None)
+    # print(f'dataset_columns : {dataset_columns}')
+    # if args.image_column is None:
+    #     image_column = (
+    #         dataset_columns[0] if dataset_columns is not None else column_names[0]
+    #     )
+    # else:
+    #     image_column = args.image_column
+    #     if image_column not in column_names:
+    #         raise ValueError(
+    #             f"--image_column' value '{args.image_column}' needs to be one of: {', '.join(column_names)}"
+    #         )
+    # if args.caption_column is None:
+    #     caption_column = (
+    #         dataset_columns[1] if dataset_columns is not None else column_names[1]
+    #     )
+    # else:
+    #     caption_column = args.caption_column
+    #     if caption_column not in column_names:
+    #         raise ValueError(
+    #             f"--caption_column' value '{args.caption_column}' needs to be one of: {', '.join(column_names)}"
+    #         )
 
-    # Preprocessing the datasets.
-    # We need to tokenize input captions and transform the images.
-    def tokenize_captions(examples, is_train=True):
-        captions = []
-        for caption in examples[caption_column]:
-            if isinstance(caption, str):
-                captions.append(caption)
-            elif isinstance(caption, (list, np.ndarray)):
-                # take a random caption if there are multiple
-                captions.append(random.choice(caption) if is_train else caption[0])
-            else:
-                raise ValueError(
-                    f"Caption column `{caption_column}` should contain either strings or lists of strings."
-                )
-        inputs = tokenizer(
-            captions,
-            max_length=tokenizer.model_max_length,
-            padding="max_length",
-            truncation=True,
-            return_tensors="pt",
-        )
-        return inputs.input_ids
+    # # Preprocessing the datasets.
+    # # We need to tokenize input captions and transform the images.
+    # def tokenize_captions(examples, is_train=True):
+    #     captions = []
+    #     for caption in examples[caption_column]:
+    #         if isinstance(caption, str):
+    #             captions.append(caption)
+    #         elif isinstance(caption, (list, np.ndarray)):
+    #             # take a random caption if there are multiple
+    #             captions.append(random.choice(caption) if is_train else caption[0])
+    #         else:
+    #             raise ValueError(
+    #                 f"Caption column `{caption_column}` should contain either strings or lists of strings."
+    #             )
+    #     inputs = tokenizer(
+    #         captions,
+    #         max_length=tokenizer.model_max_length,
+    #         padding="max_length",
+    #         truncation=True,
+    #         return_tensors="pt",
+    #     )
+    #     return inputs.input_ids
 
-    # Preprocessing the datasets.
-    train_transforms = transforms.Compose(
-        [
-            transforms.Resize(
-                args.resolution, interpolation=transforms.InterpolationMode.BILINEAR
-            ),
-            transforms.RandomHorizontalFlip()
-            if args.random_hflip
-            else transforms.Lambda(lambda x: x),
-            transforms.RandomVerticalFlip()
-            if args.random_vflip
-            else transforms.Lambda(lambda x: x),
-            transforms.ToTensor(),
-            transforms.Normalize([0.5], [0.5]),
-        ]
-    )
+    # # Preprocessing the datasets.
+    # train_transforms = transforms.Compose(
+    #     [
+    #         transforms.Resize(
+    #             args.resolution, interpolation=transforms.InterpolationMode.BILINEAR
+    #         ),
+    #         transforms.RandomHorizontalFlip()
+    #         if args.random_hflip
+    #         else transforms.Lambda(lambda x: x),
+    #         transforms.RandomVerticalFlip()
+    #         if args.random_vflip
+    #         else transforms.Lambda(lambda x: x),
+    #         transforms.ToTensor(),
+    #         transforms.Normalize([0.5], [0.5]),
+    #     ]
+    # )  
 
+    # def preprocess_train(examples):
+    #     images = [image.convert("RGB") for image in examples[image_column]]
+    #     examples["pixel_values"] = [train_transforms(image) for image in images]
+    #     examples["input_ids"] = tokenize_captions(examples)
+    #     examples["masks"] = []
+    #     examples["masked_images"] = []
+    #     for pixel_values in examples["pixel_values"]:
+    #         mask, masked_image = generate_mask(pixel_values, args.mask_mode)
+    #         examples["masks"].append(mask)
+    #         examples["masked_images"].append(masked_image)
+    #     return examples
+
+    # with accelerator.main_process_first():
+    #     if args.max_train_samples is not None:
+    #         dataset["train"] = (
+    #             dataset["train"]
+    #             .shuffle(seed=args.seed)
+    #             .select(range(args.max_train_samples))
+    #         )
+    #     # Set the training transforms
+    #     train_dataset = dataset["train"].with_transform(preprocess_train)
+
+    # def collate_fn(examples):
+    #     def _collate_imgs(vals):
+    #         vals = torch.stack(vals)
+    #         vals = vals.to(memory_format=torch.contiguous_format).float()
+    #         return vals
+
+    #     pixel_values = _collate_imgs([example["pixel_values"] for example in examples])
+    #     masks = _collate_imgs([example["masks"] for example in examples])
+    #     masked_images = _collate_imgs(
+    #         [example["masked_images"] for example in examples]
+    #     )
+    #     input_ids = torch.stack([example["input_ids"] for example in examples])
+    #     return {
+    #         "pixel_values": pixel_values,
+    #         "input_ids": input_ids,
+    #         "masks": masks,
+    #         "masked_images": masked_images,
+    #     }
+
+    # # DataLoaders creation:
+    # train_dataloader = torch.utils.data.DataLoader(
+    #     train_dataset,
+    #     shuffle=True,
+    #     collate_fn=collate_fn,
+    #     batch_size=args.train_batch_size,
+    #     num_workers=args.dataloader_num_workers,
+    # )
+    # print(f'train_dataloader created')
     train_transforms2 = transforms.Compose(
         [transforms.Resize((512, 512), interpolation=transforms.InterpolationMode.BILINEAR),
         transforms.ToTensor(),
         # transforms.Normalize([0.48145466, 0.4578275, 0.40821073], [0.26862954, 0.26130258, 0.27577711]),
-        ])    
+        ]) 
 
-    def preprocess_train(examples):
-        images = [image.convert("RGB") for image in examples[image_column]]
-        examples["pixel_values"] = [train_transforms(image) for image in images]
-        examples["input_ids"] = tokenize_captions(examples)
-        examples["masks"] = []
-        examples["masked_images"] = []
-        for pixel_values in examples["pixel_values"]:
-            mask, masked_image = generate_mask(pixel_values, args.mask_mode)
-            examples["masks"].append(mask)
-            examples["masked_images"].append(masked_image)
-        return examples
+    print(f'Preparing image_list : args.caption_file_path : {args.caption_file_path}')
+    print(f'args.image_dir : {args.image_dir}, args.token_limit: {args.token_limit}')
+    image_names_lst, caption_dict = prepare_img_captions(args.caption_file_path, tokenizer, \
+                                                         args.image_dir, args.token_limit)
+    
+    train_dataset = InpaintingDataset(image_names_lst, caption_dict, tokenizer, args.image_dir, train_transforms2)
+    print(f'train_dataset prepared : {len(train_dataset)}')
 
-    with accelerator.main_process_first():
-        if args.max_train_samples is not None:
-            dataset["train"] = (
-                dataset["train"]
-                .shuffle(seed=args.seed)
-                .select(range(args.max_train_samples))
-            )
-        # Set the training transforms
-        train_dataset = dataset["train"].with_transform(preprocess_train)
-
-    def collate_fn(examples):
-        def _collate_imgs(vals):
-            vals = torch.stack(vals)
-            vals = vals.to(memory_format=torch.contiguous_format).float()
-            return vals
-
-        pixel_values = _collate_imgs([example["pixel_values"] for example in examples])
-        masks = _collate_imgs([example["masks"] for example in examples])
-        masked_images = _collate_imgs(
-            [example["masked_images"] for example in examples]
-        )
-        input_ids = torch.stack([example["input_ids"] for example in examples])
-        return {
-            "pixel_values": pixel_values,
-            "input_ids": input_ids,
-            "masks": masks,
-            "masked_images": masked_images,
-        }
-
-    # DataLoaders creation:
-    train_dataloader = torch.utils.data.DataLoader(
-        train_dataset,
-        shuffle=True,
-        collate_fn=collate_fn,
-        batch_size=args.train_batch_size,
-        num_workers=args.dataloader_num_workers,
-    )
-    print(f'train_dataloader created')
+    train_dataloader = DataLoader(train_dataset, batch_size=args.train_batch_size, collate_fn=train_dataset.collate_fn, shuffle=True)
+    print(f'train_dataloader prepared with bs : {args.train_batch_size}')    
 
     # dataload change end
 

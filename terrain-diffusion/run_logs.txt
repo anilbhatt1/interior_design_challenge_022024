@@ -719,41 +719,12 @@ lora_attn_procs built : {'down_blocks.0.attentions.0.transformer_blocks.0.attn1.
   )
 )}
 unet.set_attn_processor using lora_attn_procs done
+lora_layers populated
+optimizer_cls : <class 'torch.optim.adamw.AdamW'>
+args.dataset_name : custom taking custom dataset
 Traceback (most recent call last):
   File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1512, in <module>
     main()
-  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 919, in main
-    unet.enable_xformers_memory_efficient_attention()
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 297, in enable_xformers_memory_efficient_attention
-    self.set_use_memory_efficient_attention_xformers(True, attention_op)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 261, in set_use_memory_efficient_attention_xformers
-    fn_recursive_set_mem_eff(module)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
-    fn_recursive_set_mem_eff(child)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
-    fn_recursive_set_mem_eff(child)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
-    fn_recursive_set_mem_eff(child)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 254, in fn_recursive_set_mem_eff
-    module.set_use_memory_efficient_attention_xformers(valid, attention_op)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 261, in set_use_memory_efficient_attention_xformers
-    fn_recursive_set_mem_eff(module)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
-    fn_recursive_set_mem_eff(child)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
-    fn_recursive_set_mem_eff(child)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 254, in fn_recursive_set_mem_eff
-    module.set_use_memory_efficient_attention_xformers(valid, attention_op)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/attention_processor.py", line 260, in set_use_memory_efficient_attention_xformers
-    raise ValueError(
-ValueError: torch.cuda.is_available() should be True but is False. xformers' memory efficient attention is only available for GPU 
-Traceback (most recent call last):
-  File "/usr/local/bin/accelerate", line 8, in <module>
-    sys.exit(main())
-  File "/usr/local/lib/python3.10/dist-packages/accelerate/commands/accelerate_cli.py", line 47, in main
-    args.func(args)
-  File "/usr/local/lib/python3.10/dist-packages/accelerate/commands/launch.py", line 1023, in launch_command
-    simple_launcher(args)
-  File "/usr/local/lib/python3.10/dist-packages/accelerate/commands/launch.py", line 643, in simple_launcher
-    raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
-subprocess.CalledProcessError: Command '['/usr/bin/python3', 'train_text_to_image_lora_sd2_inpaint.py', '--pretrained_model_name_or_path=stabilityai/stable-diffusion-2-inpainting', '--dataset_name=custom', '--caption_column=text', '--mask_mode=512train-very-large', '--mixed_precision=fp16', '--train_batch_size=4', '--gradient_accumulation_steps=4', '--num_train_epochs=1', '--checkpointing_steps=600', '--learning_rate=1e-06', '--lr_scheduler=constant', '--seed=0', '--validation_epochs=1', '--validation_file=validation.jsonl', '--output_dir=output', '--enable_xformers_memory_efficient_attention', '--report_to=wandb']' returned non-zero exit status 1.
+  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1021, in main
+    column_names = dataset["train"].column_names
+UnboundLocalError: local variable 'dataset' referenced before assignment
