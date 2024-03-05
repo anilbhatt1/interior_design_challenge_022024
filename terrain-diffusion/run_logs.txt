@@ -66,6 +66,7 @@ Num processes: 1
 Process index: 0
 Local process index: 0
 Device: cpu
+Device: cuda (when run with T4)
 
 Mixed precision type: fp16
 
@@ -744,23 +745,14 @@ total_batch_size : 16
 03/05/2024 08:53:53 - INFO - __main__ -   Gradient Accumulation steps = 4
 03/05/2024 08:53:53 - INFO - __main__ -   Total optimization steps = 13
 Steps:   0% 0/13 [00:00<?, ?it/s]training epoch # 0
-Traceback (most recent call last):
+/usr/local/lib/python3.10/dist-packages/diffusers/models/attention_processor.py:2025: FutureWarning: `LoRAXFormersAttnProcessor` is deprecated and will be removed in version 0.26.0. Make sure use XFormersAttnProcessor instead by settingLoRA layers to `self.{to_q,to_k,to_v,add_k_proj,add_v_proj,to_out[0]}.lora_layer` respectively. This will be done automatically when using `LoraLoaderMixin.load_lora_weights`
+  deprecate(
+/usr/local/lib/python3.10/dist-packages/xformers/ops/fmha/flash.py:338: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  and inp.query.storage().data_ptr() == inp.key.storage().data_ptr()
+Steps: 100% 13/13 [01:20<00:00,  5.22s/it, lr=1e-6, step_loss=0.033] Traceback (most recent call last):
   File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1524, in <module>
     main()
-  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1264, in main
-    latents = vae.encode(
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/utils/accelerate_utils.py", line 46, in wrapper
-    return method(self, *args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/autoencoders/autoencoder_kl.py", line 258, in encode
-    h = self.encoder(x)
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/autoencoders/vae.py", line 143, in forward
-    sample = self.conv_in(sample)
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/conv.py", line 463, in forward
-    return self._conv_forward(input, self.weight, self.bias)
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/conv.py", line 459, in _conv_forward
-    return F.conv2d(input, weight, bias, self.stride,
-RuntimeError: "slow_conv2d_cpu" not implemented for 'Half'
+  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1449, in main
+    with open(args.validation_file, "r") as val_index_fp:
+FileNotFoundError: [Errno 2] No such file or directory: 'validation.jsonl'
+

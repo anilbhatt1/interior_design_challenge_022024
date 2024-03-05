@@ -757,6 +757,12 @@ def parse_args():
         default=50,
         help="Limit of tokens to shorten the captions",
     )         
+    parser.add_argument(
+        "--val_image_dir",
+        type=str,
+        default='/content/val_images_interio120/',
+        help="Location of validation image directories",
+    )  
 
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
@@ -1444,11 +1450,15 @@ def main():
 
         if accelerator.is_main_process:
             if args.validation_file is not None and epoch % args.validation_epochs == 0:
-                val_dir = os.path.dirname(args.validation_file)
+                print(f' About to start validation ')
+                # val_dir = os.path.dirname(args.validation_file)
+                val_dir = args.val_image_dir
+                print(f'val_dir : {val_dir}')
                 val_examples = []
                 with open(args.validation_file, "r") as val_index_fp:
                     for line in val_index_fp:
                         val_examples.append(json.loads(line))
+                print(f'val_examples : {val_examples}')
 
                 logger.info(
                     f"Running validation... \n Generating {len(val_examples)} images"
@@ -1469,9 +1479,9 @@ def main():
                     generator = generator.manual_seed(args.seed)
                 images = []
                 for val_example in val_examples:
-                    val_image = Image.open(
-                        os.path.join(val_dir, val_example["file_name"])
-                    ).resize((args.resolution, args.resolution))
+                    val_image_path = os.path.join(val_dir, val_example["file_name"])
+                    print(f'val_image_path : {val_image_path}')
+                    val_image = Image.open(val_image_path).resize((args.resolution, args.resolution))
                     mask_image = (
                         Image.open(os.path.join(val_dir, val_example["mask_file_name"]))
                         .convert("L")
@@ -1488,6 +1498,7 @@ def main():
                         ).images[0]
                     )
 
+                print(f'Validation done-len(images):{len(images)} type(images):{type(images)}')
                 for tracker in accelerator.trackers:
                     if tracker.name == "tensorboard":
                         np_images = np.stack([np.asarray(img) for img in images])
@@ -1495,6 +1506,7 @@ def main():
                             "validation", np_images, epoch, dataformats="NHWC"
                         )
                     if tracker.name == "wandb":
+                        print(f' Saving images to wandb')
                         tracker.log(
                             {
                                 "validation": [
@@ -1513,9 +1525,11 @@ def main():
 
     # Save the lora layers
     accelerator.wait_for_everyone()
+    print(f'About to save Lora layers in {args.output_dir}')
     if accelerator.is_main_process:
         unet = unet.to(torch.float32)
         unet.save_attn_procs(args.output_dir)
+        print(f'Lora layers saved in {args.output_dir} !!')
 
     accelerator.end_training()
 
