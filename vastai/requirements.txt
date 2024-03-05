@@ -6,6 +6,7 @@ torchvision
 pillow
 transformers 
 diffusers 
+datasets
 ftfy 
 huggingface_hub
 accelerate
@@ -16,9 +17,13 @@ pytorch-lightning
 albumentations
 opencv-python
 gdown
-xformers
+xformers==0.0.17
 controlnet-aux==0.0.7
 mediapipe
+kornia==0.6
+fastai
+bitsandbytes
+wandb
 
 #apt-get install ffmpeg libsm6 libxext6  -y
 #huggingface-cli login
