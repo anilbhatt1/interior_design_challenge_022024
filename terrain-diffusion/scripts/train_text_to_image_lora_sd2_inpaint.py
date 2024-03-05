@@ -181,7 +181,7 @@ class InpaintingDataset(Dataset):
         img_mask_array = []
         for image in image_names:
             img = Image.open(f'{self.img_dir}{image}')
-            mask, img_mask = generate_mask(img)
+            mask, img_mask = generate_mask_inpaint(img)
             if self.transform:
                 transform_img = self.transform(img)
                 transform_mask = self.transform(mask)
@@ -209,7 +209,7 @@ class InpaintingDataset(Dataset):
             "masked_images": img_mask_tensor
         }
     
-def apply_random_patch(image):
+def apply_random_patch(img):
     """
     Applies a white patch of random shape and size on a random position of the image.
 
@@ -224,6 +224,8 @@ def apply_random_patch(image):
 
     # Target patch area as a percentage of image area
     target_patch_area_ratio = 0.10
+
+    image = np.array(img)
 
     # Calculate target patch area in pixels
     image_area = image.shape[0] * image.shape[1]
@@ -261,7 +263,7 @@ def apply_random_patch(image):
     modified_image[mask == 255] = [255, 255, 255]  # Set patch to white
     return mask, modified_image
 
-def generate_mask(input_image):
+def generate_mask_inpaint(input_image):
     mask_array, input_mask_array = apply_random_patch(input_image)
     mask_image = Image.fromarray(mask_array).convert("L")
     input_mask_image = Image.fromarray(input_mask_array).convert('RGB')
