@@ -883,7 +883,7 @@ def main():
     # Set correct lora layers
     lora_attn_procs = {}
     for name in unet.attn_processors.keys():
-        print(f'name in unet : {name}')
+        # print(f'name in unet : {name}')
         cross_attention_dim = (
             None
             if name.endswith("attn1.processor")
@@ -903,7 +903,7 @@ def main():
             cross_attention_dim=cross_attention_dim,
             rank=args.rank,
         )
-    print(f'lora_attn_procs built : {lora_attn_procs}')
+    # print(f'lora_attn_procs built : {lora_attn_procs}')
     unet.set_attn_processor(lora_attn_procs)
     print(f'unet.set_attn_processor using lora_attn_procs done')
 
@@ -916,7 +916,7 @@ def main():
                 logger.warn(
                     "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
-            unet.enable_xformers_memory_efficient_attention()
+            # unet.enable_xformers_memory_efficient_attention()
         else:
             raise ValueError(
                 "xformers is not available. Make sure it is installed correctly"

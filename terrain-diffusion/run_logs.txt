@@ -1,0 +1,759 @@
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_processes` was set to a value of `0`
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+/usr/local/lib/python3.10/dist-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/usr/local/lib/python3.10/dist-packages/torchvision/image.so: undefined symbol: _ZN3c104cuda9SetDeviceEi'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+2024-03-05 07:22:02.633413: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-03-05 07:22:02.633483: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-03-05 07:22:02.636005: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-03-05 07:22:04.094187: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+About to parse args
+logging_dir : output/logs
+args : Namespace(pretrained_model_name_or_path='stabilityai/stable-diffusion-2-inpainting', 
+revision=None, 
+dataset_name='custom', 
+dataset_config_name=None, 
+train_data_dir=None, 
+image_column='image', 
+caption_column='text', 
+validation_file='validation.jsonl', 
+mask_mode='512train-very-large', 
+validation_epochs=1, 
+max_train_samples=None, 
+output_dir='output', 
+cache_dir=None, 
+seed=0, 
+resolution=512, 
+random_hflip=False, 
+random_vflip=False, 
+train_batch_size=4, 
+num_train_epochs=1, 
+max_train_steps=None, 
+gradient_accumulation_steps=4, 
+gradient_checkpointing=False, 
+learning_rate=1e-06, 
+scale_lr=False, 
+lr_scheduler='constant', 
+lr_warmup_steps=500, 
+snr_gamma=None, 
+use_8bit_adam=False, 
+allow_tf32=False, 
+dataloader_num_workers=0, 
+adam_beta1=0.9, 
+adam_beta2=0.999, 
+adam_weight_decay=0.01, 
+adam_epsilon=1e-08, 
+max_grad_norm=1.0, 
+prediction_type=None, 
+logging_dir='logs', 
+mixed_precision='fp16', 
+report_to='wandb', 
+local_rank=-1, 
+checkpointing_steps=600, 
+checkpoints_total_limit=None, 
+resume_from_checkpoint=None, 
+enable_xformers_memory_efficient_attention=True, 
+noise_offset=0, 
+rank=4, 
+caption_file_path='/content/exr_subset/image_captions.json', 
+image_dir='/content/exr_subset/120/', 
+token_limit=50)
+03/05/2024 07:22:05 - INFO - __main__ - Distributed environment: NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cpu
+
+Mixed precision type: fp16
+
+scheduler/scheduler_config.json: 100% 308/308 [00:00<00:00, 1.81MB/s]
+{'rescale_betas_zero_snr', 'sample_max_value', 'variance_type', 'prediction_type', 'thresholding', 'timestep_spacing', 'clip_sample_range', 'dynamic_thresholding_ratio'} was not found in config. Values will be initialized to default values.
+noise_scheduler done
+tokenizer/tokenizer_config.json: 100% 829/829 [00:00<00:00, 5.04MB/s]
+tokenizer/vocab.json: 100% 1.06M/1.06M [00:00<00:00, 15.8MB/s]
+tokenizer/merges.txt: 100% 525k/525k [00:00<00:00, 15.1MB/s]
+tokenizer/special_tokens_map.json: 100% 460/460 [00:00<00:00, 2.66MB/s]
+tokenizer done
+text_encoder/config.json: 100% 638/638 [00:00<00:00, 3.57MB/s]
+model.safetensors: 100% 1.36G/1.36G [00:13<00:00, 99.3MB/s]
+text_encoder done
+vae/config.json: 100% 616/616 [00:00<00:00, 3.39MB/s]
+diffusion_pytorch_model.safetensors: 100% 335M/335M [00:03<00:00, 101MB/s] 
+{'force_upcast', 'scaling_factor'} was not found in config. Values will be initialized to default values.
+vae done
+unet/config.json: 100% 914/914 [00:00<00:00, 2.72MB/s]
+diffusion_pytorch_model.safetensors: 100% 3.46G/3.46G [00:49<00:00, 70.0MB/s]
+{'time_embedding_type', 'mid_block_type', 'encoder_hid_dim', 'resnet_skip_time_act', 'time_cond_proj_dim', 'time_embedding_dim', 'mid_block_only_cross_attention', 'upcast_attention', 'attention_type', 'addition_embed_type_num_heads', 'addition_time_embed_dim', 'resnet_out_scale_factor', 'cross_attention_norm', 'conv_in_kernel', 'reverse_transformer_layers_per_block', 'addition_embed_type', 'transformer_layers_per_block', 'projection_class_embeddings_input_dim', 'num_attention_heads', 'class_embed_type', 'time_embedding_act_fn', 'timestep_post_act', 'class_embeddings_concat', 'encoder_hid_dim_type', 'conv_out_kernel', 'resnet_time_scale_shift', 'only_cross_attention', 'dropout', 'num_class_embeds'} was not found in config. Values will be initialized to default values.
+unet done
+torch.float16 set
+setting lora_attn_procs using unet.config : 
+FrozenDict([('sample_size', 64), 
+('in_channels', 9), 
+('out_channels', 4), 
+('center_input_sample', False), 
+('flip_sin_to_cos', True), 
+('freq_shift', 0), 
+('down_block_types', ['CrossAttnDownBlock2D', 'CrossAttnDownBlock2D', 'CrossAttnDownBlock2D', 'DownBlock2D']), 
+('mid_block_type', 'UNetMidBlock2DCrossAttn'), 
+('up_block_types', ['UpBlock2D', 'CrossAttnUpBlock2D', 'CrossAttnUpBlock2D', 'CrossAttnUpBlock2D']), 
+('only_cross_attention', False), 
+('block_out_channels', [320, 640, 1280, 1280]), 
+('layers_per_block', 2), 
+('downsample_padding', 1), 
+('mid_block_scale_factor', 1), 
+('dropout', 0.0), 
+('act_fn', 'silu'), 
+('norm_num_groups', 32), 
+('norm_eps', 1e-05), 
+('cross_attention_dim', 1024), 
+('transformer_layers_per_block', 1), 
+('reverse_transformer_layers_per_block', None), 
+('encoder_hid_dim', None), 
+('encoder_hid_dim_type', None), 
+('attention_head_dim', [5, 10, 20, 20]), 
+('num_attention_heads', None), 
+('dual_cross_attention', False), 
+('use_linear_projection', True), 
+('class_embed_type', None), 
+('addition_embed_type', None), 
+('addition_time_embed_dim', None), 
+('num_class_embeds', None), 
+('upcast_attention', False), 
+('resnet_time_scale_shift', 'default'), 
+('resnet_skip_time_act', False), 
+('resnet_out_scale_factor', 1.0), 
+('time_embedding_type', 'positional'), 
+('time_embedding_dim', None), 
+('time_embedding_act_fn', None), 
+('timestep_post_act', None), 
+('time_cond_proj_dim', None), 
+('conv_in_kernel', 3), 
+('conv_out_kernel', 3), 
+('projection_class_embeddings_input_dim', None), 
+('attention_type', 'default'), 
+('class_embeddings_concat', False), 
+('mid_block_only_cross_attention', None), 
+('cross_attention_norm', None), 
+('addition_embed_type_num_heads', 64), 
+('_use_default_values', ['time_embedding_type', 'mid_block_type', 'encoder_hid_dim', 'resnet_skip_time_act', 'time_cond_proj_dim', 'time_embedding_dim', 'mid_block_only_cross_attention', 'upcast_attention', 'attention_type', 'addition_embed_type_num_heads', 'addition_time_embed_dim', 'resnet_out_scale_factor', 'cross_attention_norm', 'conv_in_kernel', 'reverse_transformer_layers_per_block', 'addition_embed_type', 'transformer_layers_per_block', 'projection_class_embeddings_input_dim', 'num_attention_heads', 'class_embed_type', 'time_embedding_act_fn', 'timestep_post_act', 'class_embeddings_concat', 'encoder_hid_dim_type', 'conv_out_kernel', 'resnet_time_scale_shift', 'only_cross_attention', 'dropout', 'num_class_embeds']), ('_class_name', 'UNet2DConditionModel'), 
+('_diffusers_version', '0.8.0'), 
+('_name_or_path', 'stabilityai/stable-diffusion-2-inpainting')])
+name in unet : down_blocks.0.attentions.0.transformer_blocks.0.attn1.processor
+name in unet : down_blocks.0.attentions.0.transformer_blocks.0.attn2.processor
+name in unet : down_blocks.0.attentions.1.transformer_blocks.0.attn1.processor
+name in unet : down_blocks.0.attentions.1.transformer_blocks.0.attn2.processor
+name in unet : down_blocks.1.attentions.0.transformer_blocks.0.attn1.processor
+name in unet : down_blocks.1.attentions.0.transformer_blocks.0.attn2.processor
+name in unet : down_blocks.1.attentions.1.transformer_blocks.0.attn1.processor
+name in unet : down_blocks.1.attentions.1.transformer_blocks.0.attn2.processor
+name in unet : down_blocks.2.attentions.0.transformer_blocks.0.attn1.processor
+name in unet : down_blocks.2.attentions.0.transformer_blocks.0.attn2.processor
+name in unet : down_blocks.2.attentions.1.transformer_blocks.0.attn1.processor
+name in unet : down_blocks.2.attentions.1.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.1.attentions.0.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.1.attentions.0.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.1.attentions.1.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.1.attentions.1.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.1.attentions.2.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.1.attentions.2.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.2.attentions.0.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.2.attentions.0.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.2.attentions.1.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.2.attentions.1.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.2.attentions.2.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.2.attentions.2.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.3.attentions.0.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.3.attentions.0.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.3.attentions.1.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.3.attentions.1.transformer_blocks.0.attn2.processor
+name in unet : up_blocks.3.attentions.2.transformer_blocks.0.attn1.processor
+name in unet : up_blocks.3.attentions.2.transformer_blocks.0.attn2.processor
+name in unet : mid_block.attentions.0.transformer_blocks.0.attn1.processor
+name in unet : mid_block.attentions.0.transformer_blocks.0.attn2.processor
+lora_attn_procs built : {'down_blocks.0.attentions.0.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'down_blocks.0.attentions.0.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'down_blocks.0.attentions.1.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'down_blocks.0.attentions.1.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'down_blocks.1.attentions.0.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'down_blocks.1.attentions.0.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'down_blocks.1.attentions.1.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'down_blocks.1.attentions.1.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'down_blocks.2.attentions.0.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'down_blocks.2.attentions.0.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'down_blocks.2.attentions.1.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'down_blocks.2.attentions.1.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'up_blocks.1.attentions.0.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'up_blocks.1.attentions.0.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'up_blocks.1.attentions.1.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'up_blocks.1.attentions.1.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'up_blocks.1.attentions.2.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'up_blocks.1.attentions.2.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'up_blocks.2.attentions.0.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'up_blocks.2.attentions.0.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'up_blocks.2.attentions.1.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'up_blocks.2.attentions.1.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'up_blocks.2.attentions.2.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'up_blocks.2.attentions.2.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=640, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=640, bias=False)
+  )
+), 'up_blocks.3.attentions.0.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'up_blocks.3.attentions.0.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'up_blocks.3.attentions.1.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'up_blocks.3.attentions.1.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'up_blocks.3.attentions.2.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'up_blocks.3.attentions.2.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=320, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=320, bias=False)
+  )
+), 'mid_block.attentions.0.transformer_blocks.0.attn1.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+), 'mid_block.attentions.0.transformer_blocks.0.attn2.processor': LoRAAttnProcessor(
+  (to_q_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_k_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_v_lora): LoRALinearLayer(
+    (down): Linear(in_features=1024, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+  (to_out_lora): LoRALinearLayer(
+    (down): Linear(in_features=1280, out_features=4, bias=False)
+    (up): Linear(in_features=4, out_features=1280, bias=False)
+  )
+)}
+unet.set_attn_processor using lora_attn_procs done
+Traceback (most recent call last):
+  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 1512, in <module>
+    main()
+  File "/content/interior_design_challenge_022024/terrain-diffusion/scripts/train_text_to_image_lora_sd2_inpaint.py", line 919, in main
+    unet.enable_xformers_memory_efficient_attention()
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 297, in enable_xformers_memory_efficient_attention
+    self.set_use_memory_efficient_attention_xformers(True, attention_op)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 261, in set_use_memory_efficient_attention_xformers
+    fn_recursive_set_mem_eff(module)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
+    fn_recursive_set_mem_eff(child)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
+    fn_recursive_set_mem_eff(child)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
+    fn_recursive_set_mem_eff(child)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 254, in fn_recursive_set_mem_eff
+    module.set_use_memory_efficient_attention_xformers(valid, attention_op)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 261, in set_use_memory_efficient_attention_xformers
+    fn_recursive_set_mem_eff(module)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
+    fn_recursive_set_mem_eff(child)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 257, in fn_recursive_set_mem_eff
+    fn_recursive_set_mem_eff(child)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/modeling_utils.py", line 254, in fn_recursive_set_mem_eff
+    module.set_use_memory_efficient_attention_xformers(valid, attention_op)
+  File "/usr/local/lib/python3.10/dist-packages/diffusers/models/attention_processor.py", line 260, in set_use_memory_efficient_attention_xformers
+    raise ValueError(
+ValueError: torch.cuda.is_available() should be True but is False. xformers' memory efficient attention is only available for GPU 
+Traceback (most recent call last):
+  File "/usr/local/bin/accelerate", line 8, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.10/dist-packages/accelerate/commands/accelerate_cli.py", line 47, in main
+    args.func(args)
+  File "/usr/local/lib/python3.10/dist-packages/accelerate/commands/launch.py", line 1023, in launch_command
+    simple_launcher(args)
+  File "/usr/local/lib/python3.10/dist-packages/accelerate/commands/launch.py", line 643, in simple_launcher
+    raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
+subprocess.CalledProcessError: Command '['/usr/bin/python3', 'train_text_to_image_lora_sd2_inpaint.py', '--pretrained_model_name_or_path=stabilityai/stable-diffusion-2-inpainting', '--dataset_name=custom', '--caption_column=text', '--mask_mode=512train-very-large', '--mixed_precision=fp16', '--train_batch_size=4', '--gradient_accumulation_steps=4', '--num_train_epochs=1', '--checkpointing_steps=600', '--learning_rate=1e-06', '--lr_scheduler=constant', '--seed=0', '--validation_epochs=1', '--validation_file=validation.jsonl', '--output_dir=output', '--enable_xformers_memory_efficient_attention', '--report_to=wandb']' returned non-zero exit status 1.
