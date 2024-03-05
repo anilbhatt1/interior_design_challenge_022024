@@ -61,7 +61,7 @@ from datasets import load_dataset
 from packaging import version
 from torchvision import transforms
 from tqdm.auto import tqdm
-from transformers import CLIPTextModel, CLIPTokenizer
+from transformers import CLIPTextModel, CLIPTokenizer, DataCollatorWithPadding
 
 from torch.utils.data import Dataset, DataLoader
 import cv2
