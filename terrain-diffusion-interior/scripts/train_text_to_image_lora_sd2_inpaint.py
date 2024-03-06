@@ -1363,6 +1363,8 @@ def main():
                 unet = unet.to(torch.float32)
                 unet.save_attn_procs(args.output_dir)
                 print(f'Lora layers saved in {args.output_dir} on epoch {epoch}!!')
+            
+            unet = unet.to(weight_dtype) # Changing the weight back to resume training
 
     accelerator.end_training()
 
