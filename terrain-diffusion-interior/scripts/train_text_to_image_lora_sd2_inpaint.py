@@ -1356,13 +1356,13 @@ def main():
                 del pipeline
                 torch.cuda.empty_cache()
 
-                # Save the lora layers
-            accelerator.wait_for_everyone()
-            print(f'About to save Lora layers (fp16) in {args.output_dir}')
-            if accelerator.is_main_process:
-                # unet = unet.to(torch.float32)
-                unet.save_attn_procs(args.output_dir)
-                print(f'Lora layers saved (fp16) in {args.output_dir} on epoch {epoch}!!')    
+            #     # Save the lora layers
+            # accelerator.wait_for_everyone()
+            # print(f'About to save Lora layers (fp16) in {args.output_dir}')
+            # if accelerator.is_main_process:
+            #     # unet = unet.to(torch.float32)
+            #     unet.save_attn_procs(args.output_dir)
+            #     print(f'Lora layers saved (fp16) in {args.output_dir} on epoch {epoch}!!')    
 
     # Save the lora layers
     accelerator.wait_for_everyone()
