@@ -13,3 +13,5 @@ __pycache__
 *.zip
 *.tgz
 images
+weights
+*.safetensors
