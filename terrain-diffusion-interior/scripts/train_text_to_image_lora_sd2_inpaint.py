@@ -157,7 +157,6 @@ def do_encode(inputs, text_encoder, device, max_seq_len=75):
     tokens = inputs['input_ids']
     attention_mask = inputs['attention_mask']
     num_chunks = (tokens.size(1) + max_seq_len - 1) // max_seq_len
-    print(f'type(tokens) : {type(tokens)}, len(tokens) : {tokens.size}, len(attention_mask) : {attention_mask.size}, num_chunks : {num_chunks}')
 
     text_encoder = text_encoder.to(device)
     tokens = tokens.to(device)
@@ -166,34 +165,24 @@ def do_encode(inputs, text_encoder, device, max_seq_len=75):
     for i in range(num_chunks):
         start_idx = i * max_seq_len
         end_idx = start_idx + max_seq_len
-        print(f'i: {i}, start_idx : {start_idx}, end_idx : {end_idx}')
         chunk_tokens = tokens[:, start_idx:end_idx]
         # chunk_attention_mask = attention_mask[:, start_idx:end_idx]
 
         chunk_embeddings = text_encoder.text_model.embeddings.token_embedding(chunk_tokens)
-        print(f'chunk_embeddings : {chunk_embeddings.size} chunk_tokens.size : {chunk_tokens.size}')
 
         chunk_size = chunk_tokens.size(1)
         position_ids = torch.arange(start_idx, start_idx + chunk_size, dtype=torch.long)
-        print(f'position_ids : {position_ids}')
         position_ids = position_ids.unsqueeze(0).expand(chunk_tokens.size(0), chunk_size)
-        print(f'position_ids after expand: {position_ids.size}')
 
         position_ids = torch.clamp(position_ids.to(device), max=text_encoder.text_model.embeddings.position_embedding.num_embeddings - 1)
-        print(f'position_ids after clamp: {position_ids}')
         position_embeddings = text_encoder.text_model.embeddings.position_embedding(position_ids)
-        print(f'position_embeddings : {position_embeddings.size}')
         chunk_embeddings += position_embeddings
-        print(f'chunk_embeddings after position_embeddings : {chunk_embeddings.size}')
 
         embeddings.append(chunk_embeddings)
 
     concatenated_embeddings = torch.cat(embeddings, dim=1)
-    print(f'concatenated_embeddings : {concatenated_embeddings.size}')
     attention_mask_expanded = attention_mask.unsqueeze(1).unsqueeze(2).repeat(1, 1, attention_mask.shape[1], 1)
-    print(f'attention_mask_expanded : {attention_mask_expanded.size}')
     encoder_outputs = text_encoder.text_model.encoder(concatenated_embeddings, attention_mask=attention_mask_expanded)
-    print(f'encoder_outputs : {encoder_outputs.last_hidden_state.size}')
     return(encoder_outputs.last_hidden_state)
 
 
@@ -244,7 +233,6 @@ class InpaintingDataset(Dataset):
             tokenized_caption_samples.append(tokenized_caption_dict)
         collated_captions = self.data_collator(tokenized_caption_samples)
         caption_tokens = collated_captions['input_ids']
-        print(f'caption_tokens: {caption_tokens.size}')
 
         return {
             'image_names': image_names,
@@ -317,7 +305,7 @@ def generate_mask_inpaint(input_image):
 
     return mask_image, input_mask_image
 
-def prepare_img_captions(caption_file_path, tokenizer, image_dir, token_limit):
+def prepare_img_captions(caption_file_path, image_dir):
     with open(caption_file_path, 'r') as f:
         caption_data = json.load(f)
 
@@ -1026,8 +1014,7 @@ def main():
         # transforms.Normalize([0.48145466, 0.4578275, 0.40821073], [0.26862954, 0.26130258, 0.27577711]),
         ]) 
 
-    image_names_lst, caption_dict = prepare_img_captions(args.caption_file_path, tokenizer, \
-                                                         args.image_dir, args.token_limit)
+    image_names_lst, caption_dict = prepare_img_captions(args.caption_file_path, args.image_dir)
     
     train_dataset = InpaintingDataset(image_names_lst, caption_dict, tokenizer, args.image_dir, train_transforms2)
 
@@ -1172,7 +1159,6 @@ def main():
                 # Get the text embedding for conditioning
                 # encoder_hidden_states = text_encoder(batch["input_ids"])[0]
                 encoder_hidden_states = do_encode(batch, text_encoder, latents.device)
-                print(f'encoder_hidden_states.shape: {encoder_hidden_states.shape}')
 
                 # Get the target for loss depending on the prediction type
                 if args.prediction_type is not None:
@@ -1369,9 +1355,25 @@ def main():
                             strength=1.0,
                             generator=generator,
                         ).images[0]
-                    )
+                    )                
 
-                print(f'Validation done-len(images):{len(images)} type(images):{type(images[0])}')
+                print(f'Validation done epoch : {epoch} -len(images):{len(images)} type(images):{type(images[0])}')
+
+                if not os.path.exists(args.val_image_save_dir):
+                    # Create the directory
+                    try:
+                        os.makedirs(args.val_image_save_dir)
+                        print(f"Directory '{args.val_image_save_dir}' created successfully!")
+                    except OSError as e:
+                        print(f"Error creating directory '{args.val_image_save_dir}': {e}")
+                else:
+                    print(f"Directory '{args.val_image_save_dir}' already exists.")
+
+                for val_created_img in images:
+                    val_save_path = f'{args.val_image_save_dir}{epoch}_val1.png'
+                    val_created_img.save(val_save_path)
+                    print(f'Saved {val_save_path}')
+
                 for tracker in accelerator.trackers:
                     if tracker.name == "tensorboard":
                         np_images = np.stack([np.asarray(img) for img in images])
