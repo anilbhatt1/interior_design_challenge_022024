@@ -774,21 +774,21 @@ def parse_args():
     parser.add_argument(
         "--image_dir",
         type=str,
-        default='/content/exr_subset/120/',
+        default='/im_exr_120_jpg/',
         help="Location of root image directories",
-    )
-    parser.add_argument(
-        "--token_limit",
-        type=int,
-        default=50,
-        help="Limit of tokens to shorten the captions",
-    )         
+    )      
     parser.add_argument(
         "--val_image_dir",
         type=str,
-        default='/content/val_images_interio120/',
+        default='/val_images_interio120/',
         help="Location of validation image directories",
     )  
+    parser.add_argument(
+        "--val_image_save_dir",
+        type=str,
+        default='/val_images_save/',
+        help="Location of validation image save directories",
+    )     
 
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))

@@ -1,11 +1,11 @@
 numpy
 matplotlib
-torch
+torch==2.1.0
 pandas
-torchvision
+torchvision==0.16.0+cu121
 pillow
 transformers 
-diffusers 
+diffusers==0.25.1 
 datasets
 ftfy 
 huggingface_hub
@@ -29,5 +29,10 @@ wandb
 #huggingface-cli login
 #apt install unzip
 #!git clone https://github.com/anilbhatt1/ControlNet.git
-
-
+#!git clone https://github.com/anilbhatt1/interior_design_challenge_022024.git
+#os.chdir('/content/interior_design_challenge_022024/terrain-diffusion/scripts')
+#wandb.login()
+#!gdown 1nL1U_UirQTKfjMO-Sk90kLhWBo1LYG2N  # image_captions.json
+# !gdown 1Imqc0XrkBChJ4z31MpwGF8eoz--Oge_9  # interiorverse120.zip
+#!gdown 1MbLcq3dLoT-_-8X2MzS3_M7eVpco8yRh # val_images_interio120.zip
+#!unzip -q '/content/val_images_interio120.zip' -d '/content'
