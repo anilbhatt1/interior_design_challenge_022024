@@ -1402,8 +1402,8 @@ def main():
                 else:
                     print(f"Directory '{args.val_image_save_dir}' already exists.")
 
-                for val_created_img in images:
-                    val_save_path = f'{args.val_image_save_dir}{epoch}_val1.png'
+                for idx, val_created_img in enumerate(images):
+                    val_save_path = f'{args.val_image_save_dir}{epoch}_val{idx}.png'
                     val_created_img.save(val_save_path)
                     print(f'Saved {val_save_path}')
 
