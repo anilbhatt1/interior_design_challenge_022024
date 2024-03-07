@@ -1049,7 +1049,7 @@ def main():
 
     image_names_lst, caption_dict = prepare_img_captions(args.caption_file_path1, args.caption_file_path2, args.image_dir1, args.image_dir2)
     
-    train_dataset = InpaintingDataset(image_names_lst, caption_dict, tokenizer, args.image_dir, train_transforms2)
+    train_dataset = InpaintingDataset(image_names_lst, caption_dict, tokenizer, args.image_dir1, args.image_dir2, train_transforms2)
 
     train_dataloader = DataLoader(train_dataset, batch_size=args.train_batch_size, collate_fn=train_dataset.collate_fn, shuffle=True)
 
