@@ -152,6 +152,51 @@ MASK_SETTINGS = {
     },
 }
 
+def do_encode(inputs, text_encoder, device, max_seq_len=75):
+    embeddings = []
+    tokens = inputs['input_ids']
+    attention_mask = inputs['attention_mask']
+    num_chunks = (tokens.size(1) + max_seq_len - 1) // max_seq_len
+    print(f'type(tokens) : {type(tokens)}, len(tokens) : {tokens.size}, len(attention_mask) : {attention_mask.size}, num_chunks : {num_chunks}')
+
+    text_encoder = text_encoder.to(device)
+    tokens = tokens.to(device)
+    attention_mask = attention_mask.to(device)
+    
+    for i in range(num_chunks):
+        start_idx = i * max_seq_len
+        end_idx = start_idx + max_seq_len
+        print(f'i: {i}, start_idx : {start_idx}, end_idx : {end_idx}')
+        chunk_tokens = tokens[:, start_idx:end_idx]
+        # chunk_attention_mask = attention_mask[:, start_idx:end_idx]
+
+        chunk_embeddings = text_encoder.text_model.embeddings.token_embedding(chunk_tokens)
+        print(f'chunk_embeddings : {chunk_embeddings.size} chunk_tokens.size : {chunk_tokens.size}')
+
+        chunk_size = chunk_tokens.size(1)
+        position_ids = torch.arange(start_idx, start_idx + chunk_size, dtype=torch.long)
+        print(f'position_ids : {position_ids}')
+        position_ids = position_ids.unsqueeze(0).expand(chunk_tokens.size(0), chunk_size)
+        print(f'position_ids after expand: {position_ids.size}')
+
+        position_ids = torch.clamp(position_ids.to(device), max=text_encoder.text_model.embeddings.position_embedding.num_embeddings - 1)
+        print(f'position_ids after clamp: {position_ids}')
+        position_embeddings = text_encoder.text_model.embeddings.position_embedding(position_ids)
+        print(f'position_embeddings : {position_embeddings.size}')
+        chunk_embeddings += position_embeddings
+        print(f'chunk_embeddings after position_embeddings : {chunk_embeddings.size}')
+
+        embeddings.append(chunk_embeddings)
+
+    concatenated_embeddings = torch.cat(embeddings, dim=1)
+    print(f'concatenated_embeddings : {concatenated_embeddings.size}')
+    attention_mask_expanded = attention_mask.unsqueeze(1).unsqueeze(2).repeat(1, 1, attention_mask.shape[1], 1)
+    print(f'attention_mask_expanded : {attention_mask_expanded.size}')
+    encoder_outputs = text_encoder.text_model.encoder(concatenated_embeddings, attention_mask=attention_mask_expanded)
+    print(f'encoder_outputs : {encoder_outputs.last_hidden_state.size}')
+    return(encoder_outputs.last_hidden_state)
+
+
 class InpaintingDataset(Dataset):
     def __init__(self, image_names, caption_dict, tokenizer, img_dir, transform=None):
         self.data = image_names
@@ -172,7 +217,7 @@ class InpaintingDataset(Dataset):
         }
 
     def tokenize_function(self, caption):
-        return self.tokenizer(caption, truncation=True)
+        return self.tokenizer(caption, truncation=False)
 
     def collate_fn(self, batch):
         image_names = [item['image_names'] for item in batch]
@@ -199,6 +244,7 @@ class InpaintingDataset(Dataset):
             tokenized_caption_samples.append(tokenized_caption_dict)
         collated_captions = self.data_collator(tokenized_caption_samples)
         caption_tokens = collated_captions['input_ids']
+        print(f'caption_tokens: {caption_tokens.size}')
 
         return {
             'image_names': image_names,
@@ -206,7 +252,8 @@ class InpaintingDataset(Dataset):
             'captions': captions,
             'input_ids': caption_tokens,
             "masks": mask_tensor,
-            "masked_images": img_mask_tensor
+            "masked_images": img_mask_tensor,
+            'attention_mask': collated_captions['attention_mask']
         }
     
 def apply_random_patch(img):
@@ -279,16 +326,7 @@ def prepare_img_captions(caption_file_path, tokenizer, image_dir, token_limit):
     for image_name, caption in caption_data.items():
         if os.path.exists(f'{image_dir}{image_name}'):
             image_names_lst.append(image_name)
-            tokenizer_op = tokenizer(caption, truncation=True)
-            caption_tokens = tokenizer_op['input_ids']
-            if len(caption_tokens) > token_limit:
-                caption_tokens = caption_tokens[:token_limit-1]
-                for i in range(len(caption_tokens)-1, -1, -1):
-                    if caption_tokens[i] == 269:  # This indicates '.' is encountered
-                        break
-            caption_tokens = caption_tokens[1:i+1] # i+1 to ensure that '.' is included
-            truncated_caption = tokenizer.decode(caption_tokens)
-            caption_dict[image_name] = truncated_caption
+            caption_dict[image_name] = caption
     print(f' caption lengths : {len(image_names_lst)}, {len(caption_dict)}')
 
     return image_names_lst, caption_dict
@@ -1132,7 +1170,9 @@ def main():
                 noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
 
                 # Get the text embedding for conditioning
-                encoder_hidden_states = text_encoder(batch["input_ids"])[0]
+                # encoder_hidden_states = text_encoder(batch["input_ids"])[0]
+                encoder_hidden_states = do_encode(batch, text_encoder, latents.device)
+                print(f'encoder_hidden_states.shape: {encoder_hidden_states.shape}')
 
                 # Get the target for loss depending on the prediction type
                 if args.prediction_type is not None:
