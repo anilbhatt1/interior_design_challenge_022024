@@ -9,24 +9,30 @@ Masking code adapted from github.com/justinpinkney/stable-diffusion (MIT)
  * https://github.com/justinpinkney/stable-diffusion/blob/main/ldm/data/inpainting/synthetic_mask.py
 
 Example Usage (9GB VRAM, tested 3090 Ti):
-$ accelerate launch train_text_to_image_lora_sd2_inpaint.py \
-  --pretrained_model_name_or_path="stabilityai/stable-diffusion-2-inpainting" \
-  --dataset_name="sshh12/sentinel-2-rgb-captioned" \
+$ accelerate launch '/interior_design_challenge_022024/terrain-diffusion-interior/scripts/train_text_to_image_lora_sd2_inpaint.py' \
+  --pretrained_model_name_or_path="runwayml/stable-diffusion-inpainting" \
+  --dataset_name="custom" \
   --caption_column="text" \
   --mask_mode="512train-very-large" \
   --mixed_precision="fp16" \
-  --train_batch_size=4 \
+  --train_batch_size=20 \
   --gradient_accumulation_steps=4 \
-  --num_train_epochs=100 \
-  --checkpointing_steps=600 \
+  --num_train_epochs=1 \
+  --checkpointing_steps=500 \
   --learning_rate=1e-06 \
   --lr_scheduler="constant" \
-  --seed=0 \
+  --seed=2 \
   --validation_epochs=1 \
-  --validation_file="validation.jsonl"\
+  --validation_file="/val_images_interio120/validation.jsonl"\
   --output_dir="output" \
   --enable_xformers_memory_efficient_attention \
-  --report_to="wandb"
+  --report_to="wandb" \
+  --image_dir1="/im_exr_120_jpg/" \
+  --image_dir2="/ikea_room_images/" \
+  --caption_file_path1='/image_captions.json' \
+  --caption_file_path2='/image_captions-ikea.json' \
+  --val_image_dir='/val_images_interio120/' \
+  --val_image_save_dir='/val_images_save/'
 
 Example `validation.jsonl`
     {"file_name": "img1.png", "mask_file_name": "vertical-bar-mask.png", "text": "a satellite image"}
@@ -187,12 +193,13 @@ def do_encode(inputs, text_encoder, device, max_seq_len=75):
 
 
 class InpaintingDataset(Dataset):
-    def __init__(self, image_names, caption_dict, tokenizer, img_dir, transform=None):
+    def __init__(self, image_names, caption_dict, tokenizer, img_dir1, img_dir2, transform=None):
         self.data = image_names
         self.caption_dict = caption_dict
         self.tokenizer = tokenizer
         self.data_collator = DataCollatorWithPadding(tokenizer=self.tokenizer)
-        self.img_dir = img_dir
+        self.img_dir_interio = img_dir1
+        self.img_dir_ikea = img_dir2
         self.transform = transform
 
     def __len__(self):
@@ -214,7 +221,11 @@ class InpaintingDataset(Dataset):
         mask_array = []
         img_mask_array = []
         for image in image_names:
-            img = Image.open(f'{self.img_dir}{image}')
+            if image[:5] == 'ikea-':
+                img_dir = self.img_dir_ikea
+            else:
+                img_dir = self.img_dir_interio
+            img = Image.open(f'{img_dir}{image}')
             mask, img_mask = generate_mask_inpaint(img)
             if self.transform:
                 transform_img = self.transform(img)
@@ -305,17 +316,27 @@ def generate_mask_inpaint(input_image):
 
     return mask_image, input_mask_image
 
-def prepare_img_captions(caption_file_path, image_dir):
-    with open(caption_file_path, 'r') as f:
-        caption_data = json.load(f)
+def prepare_img_captions(interio_caption_file_path, ikea_caption_file_path, \
+                         image_dir_interio, image_dir_ikea):
+    with open(interio_caption_file_path, 'r') as f:
+        interio_caption_data = json.load(f)
 
     image_names_lst = []
     caption_dict = {}
-    for image_name, caption in caption_data.items():
-        if os.path.exists(f'{image_dir}{image_name}'):
+    for image_name, caption in interio_caption_data.items():
+        if os.path.exists(f'{image_dir_interio}{image_name}'):
             image_names_lst.append(image_name)
             caption_dict[image_name] = caption
-    print(f' caption lengths : {len(image_names_lst)}, {len(caption_dict)}')
+    print(f' caption lengths after interio : {len(image_names_lst)}, {len(caption_dict)}')
+
+    with open(ikea_caption_file_path, 'r') as f:
+        ikea_caption_data = json.load(f)
+
+    for image_name, caption in ikea_caption_data.items():
+        if os.path.exists(f'{image_dir_ikea}{image_name}'):
+            image_names_lst.append(image_name)
+            caption_dict[image_name] = caption
+    print(f' caption lengths after ikea : {len(image_names_lst)}, {len(caption_dict)}')
 
     return image_names_lst, caption_dict
 
@@ -766,17 +787,29 @@ def parse_args():
         help=("The dimension of the LoRA update matrices."),
     )
     parser.add_argument(
-        "--caption_file_path",
+        "--caption_file_path1",
         type=str,
-        default="/content/exr_subset/image_captions.json",
-        help="Location of captions json file",
+        default="/image_captions.json",
+        help="Location of interio captions json file",
     )  
     parser.add_argument(
-        "--image_dir",
+        "--caption_file_path2",
+        type=str,
+        default="/image_captions-ikea.json",
+        help="Location of ikea captions json file",
+    )      
+    parser.add_argument(
+        "--image_dir1",
         type=str,
         default='/im_exr_120_jpg/',
-        help="Location of root image directories",
+        help="Location of interio root image directories",
     )      
+    parser.add_argument(
+        "--image_dir2",
+        type=str,
+        default='/ikea_room_images/',
+        help="Location of ikea root image directories",
+    )  
     parser.add_argument(
         "--val_image_dir",
         type=str,
@@ -1014,7 +1047,7 @@ def main():
         # transforms.Normalize([0.48145466, 0.4578275, 0.40821073], [0.26862954, 0.26130258, 0.27577711]),
         ]) 
 
-    image_names_lst, caption_dict = prepare_img_captions(args.caption_file_path, args.image_dir)
+    image_names_lst, caption_dict = prepare_img_captions(args.caption_file_path1, args.caption_file_path2, args.image_dir1, args.image_dir2)
     
     train_dataset = InpaintingDataset(image_names_lst, caption_dict, tokenizer, args.image_dir, train_transforms2)
 
