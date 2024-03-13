@@ -1,8 +1,8 @@
 numpy
 matplotlib
-torch==2.1.0
+#torch
 pandas
-torchvision==0.16.0+cu121
+#torchvision
 pillow
 transformers 
 diffusers==0.25.1 
@@ -17,7 +17,7 @@ pytorch-lightning
 albumentations
 opencv-python
 gdown
-xformers==0.0.17
+xformers==0.0.24
 controlnet-aux==0.0.7
 mediapipe
 kornia==0.6

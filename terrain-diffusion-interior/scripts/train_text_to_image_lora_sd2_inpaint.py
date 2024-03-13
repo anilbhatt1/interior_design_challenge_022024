@@ -191,6 +191,17 @@ def do_encode(inputs, text_encoder, device, max_seq_len=75):
     encoder_outputs = text_encoder.text_model.encoder(concatenated_embeddings, attention_mask=attention_mask_expanded)
     return(encoder_outputs.last_hidden_state)
 
+def get_pipeline_embeds(inputs, text_encoder, device, max_seq_len):
+
+    tokens = inputs['input_ids']
+    shape_max_length = tokens.shape[-1]   
+    text_encoder = text_encoder.to(device)                              
+
+    concat_embeds = []
+    for i in range(0, shape_max_length, max_seq_len):
+        concat_embeds.append(text_encoder(tokens[:, i: i + max_seq_len])[0])
+
+    return torch.cat(concat_embeds, dim=1)
 
 class InpaintingDataset(Dataset):
     def __init__(self, image_names, caption_dict, tokenizer, img_dir1, img_dir2, transform=None):
@@ -1190,8 +1201,10 @@ def main():
                 noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
 
                 # Get the text embedding for conditioning
-                # encoder_hidden_states = text_encoder(batch["input_ids"])[0]
-                encoder_hidden_states = do_encode(batch, text_encoder, latents.device)
+                # encoder_hidden_states = text_encoder(batch["input_ids"])[0]                
+                # encoder_hidden_states = do_encode(batch, text_encoder, latents.device, max_length)
+                max_length = tokenizer.model_max_length
+                encoder_hidden_states = get_pipeline_embeds(batch, text_encoder, latents.device, max_length)
 
                 # Get the target for loss depending on the prediction type
                 if args.prediction_type is not None:
