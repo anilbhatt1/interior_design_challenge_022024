@@ -794,7 +794,7 @@ def parse_args():
     parser.add_argument(
         "--rank",
         type=int,
-        default=4,
+        default=64,
         help=("The dimension of the LoRA update matrices."),
     )
     parser.add_argument(
@@ -1062,7 +1062,7 @@ def main():
     
     train_dataset = InpaintingDataset(image_names_lst, caption_dict, tokenizer, args.image_dir1, args.image_dir2, train_transforms2)
 
-    train_dataloader = DataLoader(train_dataset, batch_size=args.train_batch_size, collate_fn=train_dataset.collate_fn, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=args.train_batch_size, collate_fn=train_dataset.collate_fn, shuffle=True, num_workers=32)
 
     # dataload change end
 
