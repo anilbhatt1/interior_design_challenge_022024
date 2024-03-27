@@ -229,18 +229,18 @@ class InpaintingDataset(Dataset):
 
     def collate_fn(self, batch):
         mask_names = [item['mask_names'] for item in batch]        
-        image_names = [item['mask_names'].split('.jpg')[0] + '.jpg' for item in batch] 
+        image_names = [item['mask_names'].split('_m_')[0] + '.jpg' for item in batch] 
         img_array = []
         mask_array = []
         img_mask_array = []
         for mask_name in mask_names:           
             mask = Image.open(f'{self.mask_dir}{mask_name}')
+
+            image_name = mask_name.split('_m_')[0] + '.jpg'
+            img = Image.open(f'{self.img_dir}{image_name}').convert('RGB')
             
-            image_name = mask_name.split('.jpg')[0] + '.jpg' 
-            img = Image.open(f'{self.img_dir}{image_name}')
-            
-            img_mask_name = mask_name[:-4] + '_im.jpg' 
-            img_mask = Image.open(f'{self.img_mask_dir}{img_mask_name}')
+            img_mask_name = mask_name[:-4] + '_im.jpg'
+            img_mask = Image.open(f'{self.img_mask_dir}{img_mask_name}').convert('RGB')
 
             if self.transform:
                 transform_img = self.transform(img)
@@ -1054,7 +1054,7 @@ def main():
     
     train_dataset = InpaintingDataset(mask_names_lst, caption_dict, tokenizer, args.image_dir1, args.image_dir2, args.image_dir3, train_transforms2)
 
-    train_dataloader = DataLoader(train_dataset, batch_size=args.train_batch_size, collate_fn=train_dataset.collate_fn, shuffle=True, num_workers=4)
+    train_dataloader = DataLoader(train_dataset, batch_size=args.train_batch_size, collate_fn=train_dataset.collate_fn, shuffle=True, num_workers=16)
 
     # dataload change end
 
