@@ -332,6 +332,7 @@ def generate_mask_inpaint(input_image):
     return mask_image, input_mask_image
 
 def prepare_img_captions(caption_file_path, mask_dir):
+    print(f'caption_file_path : {caption_file_path} & mask_dir : {mask_dir}')
     with open(caption_file_path, 'r') as f:
         caption_data = json.load(f)
 
