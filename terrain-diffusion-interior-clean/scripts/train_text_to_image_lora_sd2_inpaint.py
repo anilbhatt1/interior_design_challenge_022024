@@ -23,7 +23,7 @@ $ accelerate launch '/interior_design_challenge_022024/terrain-diffusion-interio
   --lr_scheduler="constant" \
   --seed=2 \
   --validation_epochs=1 \
-  --validation_file="/val_images_interio120/validation.jsonl"\
+  --validation_file="/val_images_rose/validation.jsonl"\
   --output_dir="output" \
   --enable_xformers_memory_efficient_attention \
   --report_to="wandb" \

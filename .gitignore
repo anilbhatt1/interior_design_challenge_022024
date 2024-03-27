@@ -15,3 +15,16 @@ __pycache__
 images
 weights
 *.safetensors
+style_images/
+controlnet_model.py
+test_scratch.py
+user_config.py
+vastai/Intdesign_ch_sshh12_terrain_diffusion_trial_vastai_mar20.ipynb
+vastai/Intdesign_ch_terraindif_inpaint_finetuning_mar25_2325ist.ipynb
+vastai/broaden_mask.ipynb
+vastai/id_online_use_depth2img.ipynb
+vastai/prompt_control_items_experiment.ipynb
+vastai/prompt_control_items_experiment_vastai_mar20.ipynb
+vastai/prompt_control_items_experiment_vastai_mar21.ipynb
+vastai/prompt_control_items_experiment_vastai_mar24.ipynb
+vastai/window_masking.ipynb
